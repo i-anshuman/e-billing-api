@@ -1,11 +1,34 @@
-const express = require('express');
+'use strict';
+
+const express  = require('express');
+const morgan   = require('morgan');
+const helmet   = require('helmet');
+const cookie   = require('cookie-parser');
+const mongoose = require('mongoose');
 const app = express();
 if (process.env.NODE_ENV === "dev") {
   require('dotenv').config()
 }
+const { notFound } = require('./middlewares');
+const account = require('./routes/account');
+app.use(helmet());
+app.use(morgan('dev'));
+app.use(express.json());
+app.use(cookie(process.env.COOKIE_SECRET));
+mongoose.connect(process.env.DATABASE, {
+  useCreateIndex: true,
+  useNewUrlParser: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true
+}, error => { if (error) console.error(error); });
 
-app.get('/', (req, res) => {
-  res.json({ api: "e-billing API" });
+const db = mongoose.connection;
+db.on('open', () => {
+  app.use('/account', account);
+  app.get('/', (req, res) => {
+    res.json({ api: "e-billing API" });
+  });
+  app.use('*', notFound);
 });
 
 const port = process.env.PORT || 3001;
