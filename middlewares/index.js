@@ -1,5 +1,7 @@
 'use strict';
 
+const { verify } = require('../controllers/jwt');
+
 const notFound = (req, res) => {
   res.status(404).json({ error: "404 Not Found!!" });
 };
