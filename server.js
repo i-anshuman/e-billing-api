@@ -9,8 +9,9 @@ const app = express();
 if (process.env.NODE_ENV === "dev") {
   require('dotenv').config()
 }
-const { notFound } = require('./middlewares');
+const { notFound, ensureAuthenticated } = require('./middlewares');
 const account = require('./routes/account');
+const billing = require('./routes/bills');
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
@@ -25,6 +26,7 @@ mongoose.connect(process.env.DATABASE, {
 const db = mongoose.connection;
 db.on('open', () => {
   app.use('/account', account);
+  app.use('/bills', ensureAuthenticated, billing);
   app.get('/', (req, res) => {
     res.json({ api: "e-billing API" });
   });
