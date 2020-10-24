@@ -1,2 +1,2 @@
 # e-billing-api
-Backend of billing application.
+RESTful API for e-billing application.
