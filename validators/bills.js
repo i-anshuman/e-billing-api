@@ -24,4 +24,16 @@ const billID = (...IDs) => {
   return Joi.object(schema);
 };
 
-module.exports = { billSchema, billID };
+const filterBillsSchema = Joi.object({
+  _id: Joi.string().hex().length(24),
+  name: Joi.string().regex(/^[A-Za-z]([ ]?[A-Za-z]+)+$/),
+  date: Joi.alternatives(
+    Joi.date(),
+    Joi.object().keys({
+      lt: Joi.date(),
+      gt: Joi.date()
+    }).unknown(false)
+  )
+});
+
+module.exports = { billSchema, billID, filterBillsSchema };
