@@ -5,6 +5,7 @@ const morgan   = require('morgan');
 const helmet   = require('helmet');
 const cookie   = require('cookie-parser');
 const mongoose = require('mongoose');
+const cors     = require('cors');
 const app = express();
 if (process.env.NODE_ENV === "dev") {
   require('dotenv').config()
@@ -12,6 +13,7 @@ if (process.env.NODE_ENV === "dev") {
 const { notFound, ensureAuthenticated } = require('./middlewares');
 const account = require('./routes/account');
 const billing = require('./routes/bills');
+app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
